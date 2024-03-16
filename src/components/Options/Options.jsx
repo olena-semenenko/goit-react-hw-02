@@ -1,13 +1,13 @@
 import React from 'react';
 import css from './Options.module.css';
 
-const Options = ({good,neutrall,bad}) => {
+const Options = ({ buttons }) => {
+  
   return (
     <div>
-      <button>{good}</button>
-      <button>{neutrall}</button>
-      <button>{bad}</button>
-      {/* <button></button> */}
+      {buttons.map(item => {
+        return <button  key={item}>{item}</button>;
+      })}
     </div>
   );
 };
