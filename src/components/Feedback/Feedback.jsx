@@ -1,33 +1,25 @@
 import React from 'react';
+import css from './Feedback.module.css';
 
-const Feedback = ({ feedback }) => {
+const Feedback = ({ feedback, totalFeedback, positiveFeedback }) => {
   const feedbackStatus = Object.keys(feedback);
-  const feedbackTotal = Object.values(feedback).reduce((acc, item) => {
-    acc + item;
-    return acc;
-  }, 0);
 
-  //   function FeedbackProcent(feedback, feedbackTotal){
-  //  const positive = feedback.good + feedback.neutral;
-  //  if(feedbackTotal){
-  //     const positivePercent = (positive/feedbackTotal)*100%
-  // }
 
-  // return positivePercent;
-  //   }
   //   return markup
   return (
-    <div>
+    <div className={css.feedback_field}>
       {feedbackStatus.map(item => {
         const feedbackValues = feedback;
 
         return (
-          <p key={item}>
+          <p className={css.feedback_title} key={item}>
             {item}: {feedbackValues[item]}
           </p>
         );
       })}
-      {feedbackTotal > 0 && <p>Total:{feedbackTotal}</p>}
+      {totalFeedback > 0 && <p className={css.feedback_title}>Total: {totalFeedback}</p>}
+      {totalFeedback > 0 && <p className={css.feedback_title}>Positive: {positiveFeedback}%</p>}
+
     </div>
   );
 };
