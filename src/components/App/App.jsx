@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import css from './App.module.css';
 
 import Description from '../Description/Description';
@@ -6,28 +6,37 @@ import Options from '../Options/Options';
 import Feedback from '../Feedback/Feedback';
 import Notification from '../Notification/Notification';
 
-const buttons = ['good', 'neutral', 'bad'];
 function App() {
   const feedbackInit = {
     good: 0,
     neutral: 0,
     bad: 0,
   };
-  const [feedback, setFeedback] = useState(feedbackInit);
-  const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
-  const positiveFeedback = Math.round(((feedback.good + feedback.neutral) / totalFeedback) * 100)
-  console.log(totalFeedback)
-  console.log(feedback)
-  console.log( positiveFeedback)
+  const [feedback, setFeedback] = useState(() => {
+    const feedbackLocalStorage = window.localStorage.getItem('feedback-status');
 
+    if (feedbackLocalStorage !== null) {
+      return JSON.parse(feedbackLocalStorage);
+    }
+
+    return feedbackInit;
+  });
+  useEffect(() => {
+    window.localStorage.setItem('feedback-status', JSON.stringify(feedback));
+  }, [feedback]);
+
+  const buttons = ['good', 'neutral', 'bad'];
+  const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
+  const positiveFeedback = Math.round(((feedback.good + feedback.neutral) / totalFeedback) * 100);
 
   function updateFeedback(event) {
     const key = event.target.innerHTML;
     setFeedback({ ...feedback, [key]: feedback[key] + 1 });
   }
- function resetFeedback(){
-  setFeedback(feedbackInit)
- }
+  function resetFeedback() {
+    setFeedback(feedbackInit);
+  }
+
   return (
     <div className={css.container}>
       <Description
@@ -38,11 +47,14 @@ function App() {
         updateFeedback={updateFeedback}
         buttons={buttons}
         totalFeedback={totalFeedback}
-       
         resetFeedback={resetFeedback}
       ></Options>
       {totalFeedback > 0 ? (
-        <Feedback feedback={feedback} totalFeedback={totalFeedback} positiveFeedback={positiveFeedback}></Feedback>
+        <Feedback
+          feedback={feedback}
+          totalFeedback={totalFeedback}
+          positiveFeedback={positiveFeedback}
+        ></Feedback>
       ) : (
         <Notification notificationText="Not feedback yet"></Notification>
       )}
